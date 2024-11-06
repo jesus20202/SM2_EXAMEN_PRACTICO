@@ -1,0 +1,22 @@
+const {notificationModel} = require('../models')
+const handleFactory = require('./handleFactory')
+
+exports.createNotification = handleFactory.createOne(notificationModel);
+exports.updateNotification = handleFactory.updateOne(notificationModel);
+exports.getNotification = handleFactory.getOne(notificationModel);
+exports.getNotificationById = handleFactory.getOneId(notificationModel);
+exports.deleteNotification = handleFactory.deleteOne(notificationModel);
+exports.clearNotification = handleFactory.clearOne(notificationModel);
+exports.activeNotification = handleFactory.activeOne(notificationModel);
+exports.getAllNotifications = handleFactory.getAll(notificationModel);
+exports.countNotifications = handleFactory.countDocuments(notificationModel);
+exports.getNotificationInstance = handleFactory.getModel(notificationModel);
+exports.getNotificationInstanceConstructor = handleFactory.getModelConstructor(notificationModel);
+exports.bulkWriteNotifications = handleFactory.bulkWrite(notificationModel);
+exports.aggregateNotifications = handleFactory.aggregate(notificationModel);
+exports.distinctNotifications = handleFactory.distinct(notificationModel);
+exports.findOneAndDeleteNotification = handleFactory.findOneAndDelete(notificationModel);
+exports.findByIdAndReplaceNotification = handleFactory.findByIdAndReplace(notificationModel);
+exports.updateManyNotifications = handleFactory.updateMany(notificationModel);
+exports.transactionNotifications = handleFactory.transaction;
+exports.populateVirtualsNotification = handleFactory.populateVirtuals;

@@ -1,0 +1,37 @@
+{ 
+    "ERROR_LOGIN_PROVIDE_EMAIL_PASSWORD": "Please provide an email and password.",
+    "ERROR_LOGIN_INCORRECT": "Incorrect email or password. Please try again.",
+    "ERROR_LOGIN_DESACTIVATED": "You are deactivated or haven't verified your email yet. Please verify your email.",
+
+    "ERROR_USER_NOT_EXIST": "The provided email does not exist in our system. Please verify your email and try again.",
+    "TOKEN_SENT_SUCCESS": "Token sent to email!",
+    "EMAIL_SEND_ERROR": "There was an error sending the email. Try again later!",
+    "TOKEN_INVALID_OR_EXPIRED": "Token is invalid or has expired.",
+    "CURRENT_PASSWORD_WRONG": "Your current password is wrong.",
+
+    "USER_EXISTS": "User with email address already exists.",
+    "RESTAURANT_EXISTS": "Restaurant with name already exists.",
+    "RESTAURANT_ACTIVE": "The restaurant is already active.",
+    "MISSING_REQUIRED_FIELDS": "Please provide all required fields.",
+    "RESTAURANT_NOT_FOUND": "Restaurant not found.",
+    "NO_ACCESS":"You do not have access to this function.",
+    "TOKEN_VERIFIED":"Token has been verified successfully.",
+
+    "ERROR_MOONGOSE_REQUIRED": "Field is required.",
+    "ERROR_MOONGOSE_MAX": "Exceeds maximum allowed.",
+    "ERROR_MOONGOSE_MIN": "Does not meet minimum requirements.",
+    "ERROR_MOONGOSE_VALIDATE_ENUM": "Invalid value.",
+    "ERROR_MOONGOSE_NUMBER_MAX": "Number exceeds maximum allowed.",
+    "ERROR_MOONGOSE_NUMBER_MIN": "Number does not meet minimum requirements.",
+
+    "ERROR_PHONE_MAX_LENGTH": "Phone number exceeds maximum allowed length.",
+    "ERROR_ORDER_MIN_LENGTH": "Minimum length not met for order.",
+    "ERROR_ORDER_MAX_LENGTH": "Maximum length exceeded for order.",
+    "ERROR_USER_PASSWORD_CONFIRM": "Password confirmation does not match.",
+
+    "ERROR_MOONGOSE_VALIDATE_TIME": "Time validation error.",
+    "ERROR_MOONGOSE_VALIDATE_LIMIT": "Limit validation error.",
+    "ERROR_MOONGOSE_UNIQUE": "Unique value required.",
+
+    "ERROR_LIMIT": "You have reached the query limit. Please wait a moment before trying again."
+}

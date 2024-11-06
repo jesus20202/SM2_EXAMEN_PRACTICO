@@ -1,0 +1,22 @@
+const {conversationsModel} = require('../models')
+const handleFactory = require('./handleFactory')
+
+exports.createConversation = handleFactory.createOne(conversationsModel);
+exports.updateConversation = handleFactory.updateOne(conversationsModel);
+exports.getConversation = handleFactory.getOne(conversationsModel);
+exports.getConversationById = handleFactory.getOneId(conversationsModel);
+exports.deleteConversation = handleFactory.deleteOne(conversationsModel);
+exports.clearConversation = handleFactory.clearOne(conversationsModel);
+exports.activeConversation = handleFactory.activeOne(conversationsModel);
+exports.getAllConversations = handleFactory.getAll(conversationsModel);
+exports.countConversations = handleFactory.countDocuments(conversationsModel);
+exports.getConversationInstance = handleFactory.getModel(conversationsModel);
+exports.getConversationInstanceConstructor = handleFactory.getModelConstructor(conversationsModel);
+exports.bulkWriteConversations = handleFactory.bulkWrite(conversationsModel);
+exports.aggregateConversations = handleFactory.aggregate(conversationsModel);
+exports.distinctConversations = handleFactory.distinct(conversationsModel);
+exports.findOneAndDeleteConversation = handleFactory.findOneAndDelete(conversationsModel);
+exports.findByIdAndReplaceConversation = handleFactory.findByIdAndReplace(conversationsModel);
+exports.updateManyConversations = handleFactory.updateMany(conversationsModel);
+exports.transactionConversations = handleFactory.transaction;
+exports.populateVirtualsConversation = handleFactory.populateVirtuals;

@@ -1,0 +1,22 @@
+const {userModel} = require('../models')
+const handleFactory = require('./handleFactory')
+
+exports.createUser = handleFactory.createOne(userModel);
+exports.updateUser = handleFactory.updateOne(userModel);
+exports.getUser = handleFactory.getOne(userModel);
+exports.getUserById = handleFactory.getOneId(userModel);
+exports.deleteUser = handleFactory.deleteOne(userModel);
+exports.clearUser = handleFactory.clearOne(userModel);
+exports.activeUser = handleFactory.activeOne(userModel);
+exports.getAllUsers = handleFactory.getAll(userModel);
+exports.countUsers = handleFactory.countDocuments(userModel);
+exports.getUserInstance = handleFactory.getModel(userModel);
+exports.getUserInstanceConstructor = handleFactory.getModelConstructor(userModel);
+exports.bulkWriteUsers = handleFactory.bulkWrite(userModel);
+exports.aggregateUsers = handleFactory.aggregate(userModel);
+exports.distinctUsers = handleFactory.distinct(userModel);
+exports.findOneAndDeleteUser = handleFactory.findOneAndDelete(userModel);
+exports.findByIdAndReplaceUser = handleFactory.findByIdAndReplace(userModel);
+exports.updateManyUsers = handleFactory.updateMany(userModel);
+exports.transactionUsers = handleFactory.transaction;
+exports.populateVirtualsUser = handleFactory.populateVirtuals;

@@ -1,0 +1,37 @@
+{   
+    "ERROR_LOGIN_PROVIDE_EMAIL_PASSWORD": "Por favor, proporciona un correo electrónico y contraseña.",
+    "ERROR_LOGIN_INCORRECT": "Correo electrónico o contraseña incorrectos. Intenta nuevamente.",
+    "ERROR_LOGIN_DESACTIVATED": "Usted está desactivado o aún no ha verificado su correo electrónico. Por favor, verifique su correo electrónico.",
+    
+    "ERROR_USER_NOT_EXIST": "El correo electrónico proporcionado no existe en nuestro sistema. Por favor, verifica tu correo e inténtalo de nuevo.",
+    "TOKEN_SENT_SUCCESS": "¡Token enviado al correo electrónico!",
+    "EMAIL_SEND_ERROR": "Hubo un error al enviar el correo electrónico. Por favor, inténtalo nuevamente más tarde.",
+    "TOKEN_INVALID_OR_EXPIRED": "El token no es válido o ha caducado.",
+    "CURRENT_PASSWORD_WRONG": "Tu contraseña actual es incorrecta.",
+
+    "USER_EXISTS": "Ya existe un usuario con la dirección de correo electrónico proporcionada.",
+    "RESTAURANT_EXISTS": "Ya existe un restaurante con el nombre proporcionado.",
+    "MISSING_REQUIRED_FIELDS": "Por favor, proporciona todos los campos requeridos.",
+    "RESTAURANT_NOT_FOUND": "Restaurante no encontrado.",
+    "RESTAURANT_ACTIVE":"El restaurante ya se encuentra activo.",
+    "NO_ACCESS":"No tiene acceso a esta función.",
+    "TOKEN_VERIFIED":"El token se ha verificado correctamente.",
+    
+    "ERROR_MOONGOSE_REQUIRED": "Campo requerido.",
+    "ERROR_MOONGOSE_MAX": "Excede el máximo permitido.",
+    "ERROR_MOONGOSE_MIN": "No cumple con el mínimo requerido.",
+    "ERROR_MOONGOSE_VALIDATE_ENUM": "Valor no válido.",
+    "ERROR_MOONGOSE_NUMBER_MAX": "Número excede el máximo permitido.",
+    "ERROR_MOONGOSE_NUMBER_MIN": "Número no cumple con el mínimo requerido.",
+
+    "ERROR_PHONE_MAX_LENGTH": "Número de teléfono excede la longitud máxima permitida.",
+    "ERROR_ORDER_MIN_LENGTH": "Longitud mínima no cumplida para la orden.",
+    "ERROR_ORDER_MAX_LENGTH": "Longitud máxima excedida para la orden.",
+    "ERROR_USER_PASSWORD_CONFIRM": "La confirmación de contraseña no coincide.",
+
+    "ERROR_MOONGOSE_VALIDATE_TIME": "Error de validación de tiempo.",
+    "ERROR_MOONGOSE_VALIDATE_LIMIT": "Error de validación de límite.",
+    "ERROR_MOONGOSE_UNIQUE": "Valor único requerido.",
+
+    "ERROR_LIMIT": "Has alcanzado el límite de consultas. Por favor, espera un momento antes de intentar nuevamente."
+}

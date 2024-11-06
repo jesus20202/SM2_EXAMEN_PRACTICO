@@ -1,0 +1,22 @@
+const {eventModel} = require('../models')
+const handleFactory = require('./handleFactory')
+
+exports.createEvent = handleFactory.createOne(eventModel);
+exports.updateEvent = handleFactory.updateOne(eventModel);
+exports.getEvent = handleFactory.getOne(eventModel);
+exports.getEventById = handleFactory.getOneId(eventModel);
+exports.deleteEvent = handleFactory.deleteOne(eventModel);
+exports.clearEvent = handleFactory.clearOne(eventModel);
+exports.activeEvent = handleFactory.activeOne(eventModel);
+exports.getAllEvents = handleFactory.getAll(eventModel);
+exports.countEvents = handleFactory.countDocuments(eventModel);
+exports.getEventInstance = handleFactory.getModel(eventModel);
+exports.getEventInstanceConstructor = handleFactory.getModelConstructor(eventModel);
+exports.bulkWriteEvents = handleFactory.bulkWrite(eventModel);
+exports.aggregateEvents = handleFactory.aggregate(eventModel);
+exports.distinctEvents = handleFactory.distinct(eventModel);
+exports.findOneAndDeleteEvent = handleFactory.findOneAndDelete(eventModel);
+exports.findByIdAndReplaceEvent = handleFactory.findByIdAndReplace(eventModel);
+exports.updateManyEvents = handleFactory.updateMany(eventModel);
+exports.transactionEvents = handleFactory.transaction;
+exports.populateVirtualsEvent = handleFactory.populateVirtuals;

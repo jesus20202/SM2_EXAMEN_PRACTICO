@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Meta etiquetas esenciales -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CcontaPub-Chat</title>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-compat.js"></script>
+   
+
+    <!-- Bootstrap CSS actualizado a la versión 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts para una mejor tipografía -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 95%;
+            max-width: 1200px;
+            margin: 50px auto;
+            height: 85vh;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .top-bar {
+            background-color: #4e54c8;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .top-bar .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .top-bar .logout-btn:hover {
+            color: #ffd700;
+        }
+
+        .chat-content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .conversations, .contacts, .messages {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .conversations, .contacts {
+            width: 25%;
+            border-right: 1px solid #ddd;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .messages {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        #messageList {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Mensajes individuales */
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .message .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #4e54c8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .message .content {
+            background-color: #f1f1f1;
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 70%;
+            position: relative;
+        }
+
+        .message.self {
+            flex-direction: row-reverse;
+        }
+
+        .message.self .avatar {
+            margin-left: 10px;
+            margin-right: 0;
+            background-color: #8f94fb;
+        }
+
+        .message.self .content {
+            background-color: #d1d1ff;
+        }
+
+        /* Estilos para los checkmarks */
+        .message .content .checkmarks {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        #messageInputContainer {
+            display: flex;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-top: 1px solid #ddd;
+            align-items: center;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 1rem;
+            resize: none;
+            height: 50px;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #4e54c8;
+            box-shadow: 0 0 5px rgba(78, 84, 200, 0.5);
+        }
+
+        #sendButton {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background-color: #4e54c8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sendButton:hover {
+            background-color: #8f94fb;
+            transform: scale(1.1);
+            transition: all 0.3s;
+        }
+
+        .contact, .conversation {
+            cursor: pointer;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(78, 84, 200, 0.1);
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .contact:hover, .conversation:hover {
+            background-color: rgba(78, 84, 200, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(30, 60, 114, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #4e54c8;
+        }
+
+        .modal-content label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #4e54c8;
+            box-shadow: 0 0 5px rgba(78, 84, 200, 0.5);
+        }
+
+        .modal-content button {
+            padding: 12px 20px;
+            background-color: #4e54c8;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .modal-content button:hover {
+            background-color: #8f94fb;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .chat-content {
+                flex-direction: column;
+            }
+
+            .conversations, .contacts, .messages {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .messages {
+                flex-grow: 1;
+            }
+
+            .top-bar .logout-btn {
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal de bienvenida -->
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-comments"></i> Bienvenido</h2>
+            <p>Por favor, regístrate para continuar:</p>
+            <label for="externalId"><i class="fas fa-id-badge"></i> ID Externo:</label>
+            <input type="text" id="externalId" class="form-control" placeholder="Ingrese su ID externo">
+            <label for="name"><i class="fas fa-user"></i> Nombre:</label>
+            <input type="text" id="name" class="form-control" placeholder="Ingrese su nombre">
+            <!-- Botón para solicitar permiso de notificaciones -->
+            <button id="requestPermissionBtn" class="btn btn-secondary mt-3">
+                <i class="fas fa-bell"></i> Permitir Notificaciones
+            </button>
+            <!-- Campo oculto para almacenar el token -->
+            <input type="hidden" id="deviceToken">
+            <!-- Botón para registrar al usuario -->
+            <button class="btn btn-primary mt-3" onclick="registerUser()">
+                <i class="fas fa-sign-in-alt"></i> Registrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Interfaz del Chat -->
+    <div id="chatContainer" class="chat-container" style="display: none;">
+        <div class="top-bar">
+            <i class="fas fa-comments"></i> CcontaPub-Chat
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+        <div class="chat-content">
+            <div class="conversations">
+                <h3><i class="fas fa-comments"></i> Conversaciones</h3>
+                <ul id="conversationList" class="list-group"></ul>
+            </div>
+            <div class="contacts">
+                <h3><i class="fas fa-address-book"></i> Contactos</h3>
+                <ul id="contactList" class="list-group"></ul>
+            </div>
+            <div class="messages">
+                <div class="d-flex align-items-center mb-3">
+                    <h3 id="chatHeader" class="flex-grow-1 mb-0"><i class="fas fa-comment-dots"></i> Mensajes</h3>
+                </div>
+                <div id="messageList" class="list-group"></div>
+                <div id="messageInputContainer">
+                    <textarea id="messageInput" class="form-control" placeholder="Escribe un mensaje..."></textarea>
+                    <button id="sendButton" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let socket;
+        let currentChatUserId = null;
+        let currentChatUserName = null;
+        let currentConversationId = null;
+        let conversations = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("tokenMessage");
+            const welcomeModal = document.getElementById("welcomeModal");
+            const chatContainer = document.getElementById("chatContainer");
+
+            if (!token) {
+                // Mostrar modal si no hay token guardado
+                welcomeModal.style.display = "flex";
+            } else {
+                // Mostrar chat si el token ya está guardado
+                welcomeModal.style.display = "none";
+                chatContainer.style.display = "flex";
+                connectSocket(token); // Conectar con el servidor de Socket.IO usando el token
+                loadContacts(); // Cargar contactos después de conectarse
+            }
+        });
+
+        async function registerUser() {
+            const externalId = document.getElementById("externalId").value;
+            const name = document.getElementById("name").value;
+            const deviceToken = document.getElementById("deviceToken").value;
+
+            if (externalId && name && deviceToken) {
+                // Enviar solicitud de registro al servidor
+                const requestBody = {
+                    token: deviceToken,
+                    externalUserId: externalId,
+                    userName: name
+                };
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/v1/user', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.status === "success") {
+                        // Si la solicitud fue exitosa, guardar el tokenMessage en el almacenamiento local
+                        localStorage.setItem("tokenMessage", result.tokenMessage);
+                        localStorage.setItem("userId", result.data.user._id);
+
+                        // Ocultar el modal y mostrar el chat
+                        document.getElementById("welcomeModal").style.display = "none";
+                        document.getElementById("chatContainer").style.display = "flex";
+
+                        // Conectar con el servidor de Socket.IO
+                        connectSocket(result.tokenMessage);
+                        loadContacts(); // Cargar contactos después de registrarse
+                    } else {
+                        alert(`Error al registrarse: ${result.message}`);
+                    }
+                } catch (error) {
+                    console.error("Error al conectarse al servidor:", error);
+                    alert("Error al conectarse al servidor. Intente nuevamente.");
+                }
+            } else {
+                alert("Por favor, complete todos los campos");
+            }
+        }
+
+        function connectSocket(token) {
+            // Conectar con el servidor de Socket.IO pasando el token
+            const serverUrl = 'http://localhost:3000'; // Cambiar por la URL del servidor Socket.IO
+            socket = io(serverUrl, { query: { token }, reconnection: true, reconnectionAttempts: Infinity, reconnectionDelay: 1000 });
+
+            // Solicitar las conversaciones al conectarse
+            socket.emit("sendUserConversations");
+
+            // Escuchar las conversaciones recibidas del servidor
+            socket.on("receiveUserConversations", (response) => {
+                console.log("Conversaciones recibidas:", response);
+                if (response.status) {
+                    conversations = response.data;
+                    loadConversations(conversations);
+                } else {
+                    console.error("Error al recibir las conversaciones:", response);
+                }
+            });
+
+            socket.on("getUserConversations", (response) => {
+                if(response.status){
+                    console.log("EMITIR");
+                    socket.emit("sendUserConversations");
+                }
+            });
+
+            socket.on("sendMessage", (response) => {
+                if (response.status) {
+                    // Solo agregamos el mensaje si pertenece a la conversación actual
+                    if (response.data.conversationId === currentConversationId) {
+                        console.log("Mensaje recibido");
+                    } else {
+                        // Opcional: Actualizar la lista de conversaciones o mostrar una notificación
+                        console.log("Mensaje recibido en otra conversación");
+                    }
+                } else {
+                    console.error("Error al recibir mensaje:", response);
+                }
+            });
+
+            socket.on("getConversationMessages", (response) => {
+                if (response.status) {
+                    const messageList = document.getElementById("messageList");
+                    messageList.innerHTML = "";
+                    response.data.forEach(message => {
+                        addMessageToChat(message);
+                    });
+                } else {
+                    console.error("Error al cargar los mensajes:", response);
+                }
+            });
+
+            socket.on("clientError", (error) => {
+                console.error("Error del servidor:", error);
+                alert(`Error: ${error.message}`);
+            });
+
+            socket.on("joinConversation", (response) => {
+                console.log("Usuario se ha unido a la conversación:", response);
+            });
+
+            socket.on("leaveConversation", (response) => {
+                console.log("Usuario se ha salido de la conversación:", response);
+            });
+        }
+
+        function addMessageToChat(message) {
+            // Verificamos que el mensaje pertenece a la conversación actual
+            if (message.conversationId !== currentConversationId) {
+                return; // No hacemos nada si el mensaje no es de la conversación actual
+            }
+
+            const messageList = document.getElementById("messageList");
+            const localUserId = localStorage.getItem("userId");
+            const senderId = message.senderId._id || message.senderId;
+            const senderName = senderId === localUserId ? "Tú" : message.senderId.name || message.name || "Desconocido";
+
+            const isSelf = senderId === localUserId;
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", isSelf ? "self" : "other");
+            messageElement.setAttribute('id', `message-${message._id || message.id}`);
+
+            const avatar = document.createElement("div");
+            avatar.classList.add("avatar");
+            avatar.textContent = senderName.charAt(0).toUpperCase();
+
+            const content = document.createElement("div");
+            content.classList.add("content");
+            content.innerHTML = `<p>${message.content}</p><small>${new Date(message.createdAt || message.timestamp).toLocaleTimeString()}</small>`;
+
+            // Agregar checkmarks para mensajes enviados por el usuario actual
+            if (isSelf) {
+                const checkmarks = document.createElement("span");
+                checkmarks.classList.add("checkmarks");
+
+                // Determinar si el mensaje ha sido leído por el destinatario
+                let isRead = false;
+                if (message.readBy && message.readBy.length > 0) {
+                    // Verificar si el otro participante ha leído el mensaje
+                    isRead = message.readBy.some(read => read.userId !== localUserId);
+                }
+
+                if (isRead) {
+                    // Dos checkmarks (mensaje leído)
+                    checkmarks.innerHTML = `<i class="fas fa-check-double"></i>`;
+                    checkmarks.style.color = "#4e54c8"; // Color para mensaje leído
+                } else {
+                    // Un checkmark (mensaje enviado pero no leído)
+                    checkmarks.innerHTML = `<i class="fas fa-check"></i>`;
+                    checkmarks.style.color = "#888"; // Color para mensaje no leído
+                }
+
+                content.appendChild(checkmarks);
+            }
+
+            messageElement.appendChild(avatar);
+            messageElement.appendChild(content);
+
+            messageList.appendChild(messageElement);
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        async function loadContacts() {
+            try {
+                const token = localStorage.getItem("tokenMessage");
+                const response = await fetch('http://localhost:3000/api/v1/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status) {
+                    const contacts = result.data;
+                    displayContacts(contacts);
+                } else {
+                    console.error("Error al obtener los contactos:", result.message);
+                }
+            } catch (error) {
+                console.error("Error al conectarse al servidor:", error);
+            }
+        }
+
+        function loadConversations(conversations) {
+            const conversationList = document.getElementById("conversationList");
+            conversationList.innerHTML = "";
+
+            if (!conversations || conversations.length === 0) {
+                const li = document.createElement("li");
+                li.classList.add("list-group-item");
+                li.textContent = "No hay conversaciones disponibles";
+                conversationList.appendChild(li);
+            } else {
+                conversations.forEach(convo => {
+                    const li = document.createElement("li");
+                    li.classList.add("list-group-item", "conversation");
+
+                    let conversationTitle = convo.titleTemp || "Conversación sin título";
+                    let unreadCount = convo.countUnread > 0 ? ` (${convo.countUnread} no leídos)` : "";
+                    let lastMessageContent = convo.lastMessage ? convo.lastMessage.content : "Sin mensajes";
+                    let lastMessageSenderId = convo.lastMessage ? (convo.lastMessage.senderId._id || convo.lastMessage.senderId) : null;
+                    let lastMessageSenderName = lastMessageSenderId === localStorage.getItem("userId") ? "Tú" : convo.lastMessage.name || "Desconocido";
+
+                    li.innerHTML = `<strong>${conversationTitle}${unreadCount}</strong><br><small>Último mensaje de ${lastMessageSenderName}: ${lastMessageContent}</small>`;
+                    li.onclick = () => {
+                        currentConversationId = convo._id || convo.id;
+                        const localUserId = localStorage.getItem("userId");
+
+                        // Identificar al otro participante
+                        if (convo.type === 'individual') {
+                            let otherUser;
+                            if (convo.admin.userId !== localUserId) {
+                                otherUser = convo.admin;
+                            } else {
+                                otherUser = convo.participants.find(p => p.userId !== localUserId);
+                            }
+                            currentChatUserId = otherUser.userId;
+                            currentChatUserName = otherUser.name;
+                        } else {
+                            // Lógica para grupos u otros tipos de conversación
+                            currentChatUserName = conversationTitle;
+                        }
+
+                        document.getElementById("chatHeader").textContent = `Chat con ${currentChatUserName}`;
+                        document.getElementById("messageList").innerHTML = "Cargando mensajes...";
+                        socket.emit('joinConversation', currentConversationId); // Unirse a la conversación
+                        loadMessages(currentConversationId);
+                    };
+                    conversationList.appendChild(li);
+                    socket.emit('joinConversation', convo._id || convo.id); // Unirse a cada conversación
+                });
+            }
+        }
+
+        function displayContacts(contacts) {
+            const contactList = document.getElementById("contactList");
+            contactList.innerHTML = "";
+
+            contacts.forEach(contact => {
+                const li = document.createElement("li");
+                li.classList.add("list-group-item", "contact");
+                li.innerHTML = `<i class="fas fa-user"></i> ${contact.name} (ID: ${contact.externalUserId})`;
+                li.onclick = () => {
+                    currentChatUserId = contact._id;
+                    currentChatUserName = contact.name;
+                    document.getElementById("chatHeader").textContent = `Chat con ${contact.name}`;
+                    document.getElementById("messageList").innerHTML = "";
+                    initiateConversation(contact._id, contact.name, "Hola, me gustaría iniciar una conversación.");
+                };
+                contactList.appendChild(li);
+            });
+        }
+
+        async function initiateConversation(contactId, contactName, initialMessage) {
+            const userId = localStorage.getItem("userId");
+            const token = localStorage.getItem("tokenMessage");
+
+            try {
+                const requestBody = {
+                    userId: userId,
+                    memberUserId: contactId,
+                    content: initialMessage
+                };
+
+                const response = await fetch('http://localhost:3000/api/v1/conversation/init', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+
+                console.log("result",result)
+
+                if (result.status) {
+                    currentConversationId = result.data._id;
+                    currentChatUserId = contactId;
+                    currentChatUserName = contactName;
+                    document.getElementById("chatHeader").textContent = `Chat con ${contactName}`;
+                    document.getElementById("messageList").innerHTML = "";
+                    socket.emit('joinConversation', currentConversationId);
+                    
+                    loadMessages(currentConversationId);
+            
+                    socket.emit("sendUserConversations");
+                } else {
+                    alert(`Error al iniciar la conversación: ${result.message}`);
+                }
+            } catch (error) {
+                console.error("Error al conectarse al servidor:", error);
+                alert("Error al conectarse al servidor. Intente nuevamente.");
+            }
+        }
+
+        async function sendMessageAPI(content) {
+            try {
+                socket.emit('sendMessage', currentConversationId, content);
+            } catch (error) {
+                console.error("Error al enviar el mensaje:", error);
+            }
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput").value.trim();
+
+            if (messageInput !== "") {
+                if (!currentConversationId) {
+                    alert("Seleccione una conversación o contacto para enviar un mensaje.");
+                } else {
+                    document.getElementById("messageInput").value = "";
+                    sendMessageAPI(messageInput);
+                    // No agregamos el mensaje manualmente; esperamos a que el servidor lo emita de vuelta
+                }
+            }
+        }
+
+        function loadMessages(conversationId) {
+            socket.emit('getConversationMessages', conversationId);
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+    </script>
+     
+    <script src="main.js"></script>
+    <!-- Bootstrap JS actualizado a la versión 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
