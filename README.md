@@ -4,6 +4,10 @@
 **Curso**: Móviles II  
 **Fecha**: 6/11/24  
 
+**URL** : https://github.com/XNICAL/CcontaPub-Chat-Backend
+
+**URL** : [https://github.com/XNICAL/CcontaPub-Chat-Backend](https://github.com/jesus20202/SM2_EXAMEN_PRACTICO)
+
 ## Historia de Usuario 1: Recuperación de Contraseña
 
 **Descripción**:  
@@ -152,4 +156,3 @@ exports.getUserConversationsController = async (io, socket) => {
 };
 ```
 
-**URL** : https://github.com/XNICAL/CcontaPub-Chat-Backend
